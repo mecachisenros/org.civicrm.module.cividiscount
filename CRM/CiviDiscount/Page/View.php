@@ -135,7 +135,8 @@ class CRM_CiviDiscount_Page_View extends CRM_Core_Page {
       'autodiscount' => NULL,
       'memberships' => NULL,
       'events' => NULL,
-      'pricesets' => NULL
+      'pricesets' => NULL,
+      'contributions' => NULL
     ];
 
     foreach ($this->_multiValued as $mv => $info) {
@@ -162,6 +163,14 @@ class CRM_CiviDiscount_Page_View extends CRM_Core_Page {
     if (array_key_exists('memberships', $defaults)) {
       $defaults['memberships'] = CRM_CiviDiscount_Utils::getIdsTitles($defaults['memberships'], $membershipTypes);
       $this->assign('memberships', $defaults['memberships']);
+    }
+
+    if (array_key_exists('contributions', $defaults)) {
+      $defaults['contributions'] = CRM_CiviDiscount_Utils::getIdsTitles(
+        $defaults['contributions'],
+        CRM_CiviDiscount_Utils::getContributionPages()
+      );
+      $this->assign('contributions', $defaults['contributions']);
     }
 
     if (array_key_exists('autodiscount', $defaults)) {

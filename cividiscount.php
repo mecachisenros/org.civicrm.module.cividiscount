@@ -186,6 +186,14 @@ function cividiscount_civicrm_buildForm($fname, &$form) {
       }
     }
 
+    // display the discount text field for contribution pages
+    if (empty($form->getVar('_eventId')) || empty($form->_useForMember)) {
+      $ids = _cividiscount_get_discounted_contribution_ids();
+      if (!empty($ids) && in_array($form->getVar('_id'), $ids)) {
+        $addDiscountField = TRUE;
+      }
+    }
+
     // Try to add the textfield. If in a multi-step form, hide the textfield
     // but preserve the value for later processing.
     if ($addDiscountField) {
@@ -273,15 +281,7 @@ function cividiscount_civicrm_buildAmount($pageType, &$form, &$amounts) {
         || ($form->getVar('_action') & CRM_Core_Action::ADD)
         || ($form->getVar('_action') & CRM_Core_Action::UPDATE)
       )
-    && !empty($amounts) && is_array($amounts) &&
-      ($pageType == 'event' || $pageType == 'membership')) {
-
-    if (!$pageType == 'membership' && in_array(get_class($form), [
-      'CRM_Contribute_Form_Contribution',
-      'CRM_Contribute_Form_Contribution_Main',
-    ])) {
-      return;
-    }
+    && !empty($amounts) && is_array($amounts)) {
 
     $contact_id = _cividiscount_get_form_contact_id($form);
     $autodiscount = FALSE;
@@ -331,7 +331,20 @@ function cividiscount_civicrm_buildAmount($pageType, &$form, &$amounts) {
     }
 
     $form->set('_discountInfo', NULL);
-    $discountEntity = ($pageType == 'membership') ? 'membership_type' : 'event';
+
+    switch ($pageType) {
+      case 'membership':
+        $discountEntity = 'membership_type';
+        break;
+      case 'event':
+        $discountEntity = 'event';
+        break;
+      default:
+        $discountEntity = 'contribution_page';
+        $eid = $form->getVar('_id');
+        break;
+    }
+
     $discountCalculator = new CRM_CiviDiscount_DiscountCalculator($discountEntity, $eid, $contact_id, $code, FALSE);
 
     $discounts = $discountCalculator->getDiscounts();
@@ -372,6 +385,8 @@ function cividiscount_civicrm_buildAmount($pageType, &$form, &$amounts) {
           if (!empty($key)) {
             $discounts[$key]['pricesets'] = array_keys($priceSetInfo);
           }
+        } elseif ($pageType == 'contribution') {
+          $applyToAllLineItems = TRUE;
         }
         else {
           // filter only valid membership types that have discount
@@ -404,7 +419,6 @@ function cividiscount_civicrm_buildAmount($pageType, &$form, &$amounts) {
           if (!is_array($fee['options'])) {
             continue;
           }
-
           foreach ($fee['options'] as $option_id => &$option) {
             if (!empty($applyToAllLineItems) || CRM_Utils_Array::value($option['id'], $priceFields)) {
               $originalLabel = $originalAmounts[$fee_id]['options'][$option_id]['label'];
@@ -640,7 +654,21 @@ function cividiscount_civicrm_postProcess($class, &$form) {
   elseif ($class == 'CRM_Contribute_Form_Contribution_Confirm') {
     // Note that CRM_Contribute_Form_Contribution_Main is an intermediate form.
     // CRM_Contribute_Form_Contribution_Confirm completes the transaction.
-    _cividiscount_consume_discount_code_for_online_contribution($params, $discountParams, $discount['memberships']);
+    if (!empty($form->_useForMember)) {
+      _cividiscount_consume_discount_code_for_online_contribution(
+        $params,
+        $discountParams,
+        $discount['memberships']
+      );
+    } else {
+      if (empty($discountParams['contribution_id'])) {
+        $discountParams['contribution_id'] = $form->getVar('_contributionID');
+      }
+      _cividiscount_consume_discount_code_for_contribution_page(
+        $params,
+        $discountParams
+      );
+    }
   }
   else {
     $contribution_id = NULL;
@@ -723,6 +751,13 @@ function _cividiscount_consume_discount_code_for_online_contribution($params, $d
   $discountParams['entity_table'] = 'civicrm_membership';
   $discountParams['entity_id'] = $membershipId;
 
+  civicrm_api3('DiscountTrack', 'create', $discountParams);
+}
+
+function _cividiscount_consume_discount_code_for_contribution_page($params, $discountParams) {
+  $discountParams['entity_table'] = 'civicrm_contribution_page';
+  $discountParams['entity_id'] = CRM_Utils_Array::value('contributionPageID', $params);
+  $discountParams['contact_id'] = CRM_Utils_Array::value('contactID', $params);
   civicrm_api3('DiscountTrack', 'create', $discountParams);
 }
 
@@ -868,6 +903,13 @@ function _cividiscount_get_discounted_priceset_ids() {
  */
 function _cividiscount_get_discounted_membership_ids() {
   return _cividiscount_get_items_from_discounts(_cividiscount_get_discounts(), 'memberships');
+}
+
+/**
+ * Returns an array of all discountable contribution pages ids.
+ */
+function _cividiscount_get_discounted_contribution_ids() {
+  return _cividiscount_get_items_from_discounts(_cividiscount_get_discounts(), 'contributions');
 }
 
 /**

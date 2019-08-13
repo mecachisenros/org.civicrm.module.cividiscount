@@ -117,6 +117,9 @@ SELECT    t.item_id as item_id,
         if (array_key_exists($event_id, $events)) {
           $row['event_title'] = $events[$event_id];
         }
+      } elseif ($row['entity_table'] == 'civicrm_contribution_page') {
+        $contribution_page = CRM_CiviDiscount_Utils::getContributionPages($dao->entity_id);
+        $row['contribution_page_title'] = $contribution_page[$dao->entity_id];
       }
       else {
         if ($row['entity_table'] == 'civicrm_membership') {

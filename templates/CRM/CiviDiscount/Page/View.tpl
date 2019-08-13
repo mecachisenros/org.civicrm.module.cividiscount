@@ -97,6 +97,14 @@
       </td>
     </tr>
     <tr>
+      <td class="label">{ts}Contribution Pages{/ts}</td>
+      <td>
+        {foreach from=$contributions key=k item=v}
+          {$v} <br />
+        {/foreach}
+      </td>
+    </tr>
+    <tr>
       <td class="label">{ts}Price Sets{/ts}</td>
       <td>
         {foreach from=$pricesets key=k item=v}

@@ -292,6 +292,11 @@ class CRM_CiviDiscount_DAO_Item extends CRM_Core_DAO {
           'type' => CRM_Utils_Type::T_TEXT,
           'title' => E::ts('Memberships'),
         ],
+        'contributions' => [
+          'name' => 'contributions',
+          'type' => CRM_Utils_Type::T_TEXT,
+          'title' => E::ts('Contribution Pages'),
+        ],
         'autodiscount' => [
           'name' => 'autodiscount',
           'type' => CRM_Utils_Type::T_TEXT,

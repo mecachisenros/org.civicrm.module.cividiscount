@@ -151,6 +151,21 @@
         </div>
       </div>
     {/if}
+    {if $form.contributions}
+      <div class="crm-accordion-wrapper {if $action eq 1}collapsed {/if}crm-discount-form-block-contributions">
+        <div class="crm-accordion-header">
+          {ts}Discounts for contributions{/ts}
+        </div>
+        <div class="crm-accordion-body">
+          <table class="form-layout-compressed">
+            <tr class="crm-discount-item-form-block-contributions">
+              <td class="label">{$form.contributions.label} {help id="memberships" title=$form.contributions.label}</td>
+              <td>{$form.contributions.html}<br/></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    {/if}
     {if $autodiscounts}
       <div class="crm-accordion-wrapper collapsed crm-discount-form-block-other-criteria">
         <div class="crm-accordion-header">

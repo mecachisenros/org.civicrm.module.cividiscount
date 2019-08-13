@@ -50,4 +50,15 @@ class CRM_CiviDiscount_Upgrader extends CRM_CiviDiscount_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_2204() {
+    if (CRM_Core_BAO_SchemaHandler::checkIfFieldExists('cividiscount_item', 'contributions')) {
+      $this->ctx->log->info('Skipped cividiscount update 2204.  Column contributions already present on cividiscount_item table.');
+    }
+    else {
+      $this->ctx->log->info('Applying cividiscount update 2204.  Adding contributions to the cividiscount_item table.');
+      CRM_Core_DAO::executeQuery('ALTER TABLE cividiscount_item ADD COLUMN contributions text AFTER memberships');
+    }
+    return TRUE;
+  }
+
 }

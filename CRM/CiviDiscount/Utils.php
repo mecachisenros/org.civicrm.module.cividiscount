@@ -101,6 +101,29 @@ ORDER BY  pf_label, pfv.price_field_id, pfv.weight
   }
 
   /**
+   * Retrieves active contributions pages
+   * indexed by the contribution page ID.
+   *
+   * @param int|null $id The contribution page id
+   * @return array $contributionPages The active contribution pages or empty array
+   */
+  public static function getContributionPages($id = null) {
+    $params = $id ? ['id' => $id] : [
+      'is_active' => 1,
+      'return' => ['title', 'id'],
+    ];
+
+    $contributionPages = civicrm_api3('ContributionPage', 'get', $params);
+
+    if (empty($contributionPages['values'])) {
+      return [];
+    }
+
+    return array_column($contributionPages['values'], 'title', 'id');
+
+  }
+
+  /**
    * Sort of acts like array_intersect(). We want to match value of one array
    * with key of another to return the id and title for things like events, membership, etc.
    */

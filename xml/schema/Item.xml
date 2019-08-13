@@ -83,6 +83,12 @@
        <add>4.1</add>
   </field>
   <field>
+       <name>contributions</name>
+       <type>text</type>
+       <comment>Serialized list of contribution pages for which this code can be used</comment>
+       <add>4.1</add>
+  </field>
+  <field>
        <name>autodiscount</name>
        <type>text</type>
        <comment>Serialized list of entity-based attributes. A user with one of them has the discount automatically applied</comment>

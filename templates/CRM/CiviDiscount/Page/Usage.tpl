@@ -32,6 +32,7 @@
       {/if}
       <th class="label">{ts}Event{/ts}</th>
       <th class="label">{ts}Membership{/ts}</th>
+      <th class="label">{ts}Contribution Page{/ts}</th>
       <th class="label">{ts}Date{/ts}</th>
       <th class="label">{ts}Code{/ts}</th>
     </tr>
@@ -46,6 +47,7 @@
           {/if}
           <td>{$row.event_title}</td>
           <td>{$row.membership_title}</td>
+          <td>{$row.contribution_page_title}</td>
           <td>{$row.used_date|crmDate}</td>
           <td>{$row.code}</td>
         </tr>

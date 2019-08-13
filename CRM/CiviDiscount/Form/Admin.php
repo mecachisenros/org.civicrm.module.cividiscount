@@ -200,6 +200,18 @@ class CRM_CiviDiscount_Form_Admin extends CRM_Admin_Form {
       );
     }
 
+    $contributions = CRM_CiviDiscount_Utils::getContributionPages();
+    if (!empty($contributions)) {
+      $this->_multiValued['contributions'] = $contributions;
+      $this->add('select',
+        'contributions',
+        E::ts('Contribution Pages'),
+        $contributions,
+        FALSE,
+        ['placeholder' => E::ts('- any -')] + $this->select2style
+      );
+    }
+
     $pricesets = CRM_CiviDiscount_Utils::getNestedPriceSets();
     if (!empty($pricesets)) {
       $this->_multiValued['pricesets'] = $pricesets;

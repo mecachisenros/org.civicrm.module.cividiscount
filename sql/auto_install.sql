@@ -19,6 +19,7 @@ CREATE TABLE `cividiscount_item` (
      `events` text    COMMENT 'Serialized list of events for which this code can be used',
      `pricesets` text    COMMENT 'Serialized list of pricesets for which this code can be used',
      `memberships` text    COMMENT 'Serialized list of memberships for which this code can be used',
+     `contributions` text    COMMENT 'Serialized list of contribution pages for which this code can be used',
      `autodiscount` text    COMMENT 'Some sort of autodiscounting mechanism?',
      `organization_id` int unsigned DEFAULT NULL COMMENT 'FK to Contact ID for the organization that originated this discount',
      `active_on` datetime DEFAULT NULL  COMMENT 'When is this discount activated?',

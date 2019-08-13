@@ -116,6 +116,7 @@ class CRM_CiviDiscount_BAO_Item extends CRM_CiviDiscount_DAO_Item {
     events,
     pricesets,
     memberships,
+    contributions,
     autodiscount,
     expire_on,
     active_on,
@@ -158,7 +159,8 @@ class CRM_CiviDiscount_BAO_Item extends CRM_CiviDiscount_DAO_Item {
     $fields = [
       'events' => 'event',
       'pricesets' => 'price_set',
-      'memberships' => 'membership_type'
+      'memberships' => 'membership_type',
+      'contributions' => 'contribution_page'
     ];
     foreach ($fields as $field => $entity) {
       if (!isset($discount[$field]) || is_null($discount[$field])) {
