@@ -30,6 +30,7 @@
       <th class="label">{ts}Contact{/ts}</th>
       <th class="label">{ts}Event{/ts}</th>
       <th class="label">{ts}Membership{/ts}</th>
+      <th class="label">{ts}Contribution Page{/ts}</th>
       <th class="label">{ts}Date{/ts}</th>
     </tr>
     {foreach from=$rows item=row}
@@ -38,6 +39,7 @@
           <td><a href='{crmURL p='civicrm/contact/view' q="cid=`$row.contact_id`&reset=1"}'>{$row.display_name}</a>&nbsp;&nbsp;(ID:{$row.contact_id})</td>
           <td>{$row.event_title}</td>
           <td>{$row.membership_title}</td>
+          <td>{$row.contribution_page_title}</td>
           <td>{$row.used_date|crmDate}</td>
         </tr>
       {/if}
